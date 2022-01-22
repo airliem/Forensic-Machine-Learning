@@ -16,8 +16,8 @@ import copy
 # Interactive mode on
 plt.ion()
 
-# Image augmentation and normalisation for loading data to model
-# Augmentation and normalization of training data and normalization of testing data
+# Resize and convert to tensor and normalisation for loading data to model
+# Resize and convert to tensor and normalization of training data and testing data
 data_transforms = {
     'train': transforms.Compose([
         transforms.Resize((256, 256)),
@@ -175,7 +175,7 @@ for param in model_conv.parameters():
 num_ftrs = model_conv.fc.in_features
 
 # Output set to number of labels
-model_conv.fc = nn.Linear(num_ftrs, 3)
+model_conv.fc = nn.Linear(num_ftrs, 2)
 
 # Uses GPU-cude else CPU
 model_conv = model_conv.to(device)
