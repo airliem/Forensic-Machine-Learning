@@ -5,11 +5,13 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import numpy as np
 import torchvision
-from torchvision import datasets, transforms
+from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 import time
 import os
 import copy
+from sklearn.metrics import confusion_matrix
+from torch.autograd import Variable
 
 # Transfer learning model used for image classification with CovNet as fixed feature extractor 
 
@@ -39,7 +41,7 @@ data_dir = '/home/melissa/Documents/Hair_Basic/Basic_Hair_Dataset/'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
 
 # Provides data to model (4 images per batch, random, 4 parallel data imput)
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4, shuffle=True, num_workers=4) for x in ['train', 'val']}
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=22, shuffle=True, num_workers=4) for x in ['train', 'val']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
@@ -204,3 +206,17 @@ PATH = 'state_dict_model.pt'
 
 # Saves model
 torch.save(model_conv.state_dict(), PATH)
+
+nb_classes = 3
+
+confusion_matrix = torch.zeros(nb_classes, nb_classes)
+with torch.no_grad():
+    for i, (inputs, classes) in enumerate(dataloaders['val']):
+        inputs = inputs.to(device)
+        classes = classes.to(device)
+        outputs = model_conv(inputs)
+        _, preds = torch.max(outputs, 1)
+        for t, p in zip(classes.view(-1), preds.view(-1)):
+                confusion_matrix[t.long(), p.long()] += 1
+
+print(confusion_matrix)
