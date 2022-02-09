@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import numpy as np
 import torchvision
-from torchvision import datasets, models, transforms
+from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 import time
 import os
@@ -18,6 +18,7 @@ plt.ion()
 
 # Resize and convert to tensor and normalisation for loading data to model
 # Resize and convert to tensor and normalization of training data and testing data
+# RGB has three channels so three parameters for mean and standard deviation
 data_transforms = {
     'train': transforms.Compose([
         transforms.Resize((256, 256)),
@@ -32,7 +33,7 @@ data_transforms = {
 }
 
 # Sets folderpath to folders containing the images 
-data_dir = '/home/melissa/Documents/Hazel_Lara_Pilot/Hazel_Lara_Dataset/'
+data_dir = '/home/melissa/Documents/Hair_Basic/Basic_Hair_Dataset/'
 
 # Loads dataset from folderpath and applies transforms
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
@@ -139,7 +140,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=15):
     return model
 
 # General function to display model predictions for some images
-def visualize_model(model, num_images=6):
+def visualize_model(model, num_images=10):
     was_training = model.training
     model.eval()
     images_so_far = 0
@@ -175,7 +176,7 @@ for param in model_conv.parameters():
 num_ftrs = model_conv.fc.in_features
 
 # Output set to number of labels
-model_conv.fc = nn.Linear(num_ftrs, 2)
+model_conv.fc = nn.Linear(num_ftrs, 3)
 
 # Uses GPU-cude else CPU
 model_conv = model_conv.to(device)
