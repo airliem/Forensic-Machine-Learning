@@ -5,13 +5,12 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import numpy as np
 import torchvision
-from torchvision import datasets, models, transforms
+from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 import time
 import os
 import copy
 from sklearn.metrics import confusion_matrix
-from torch.autograd import Variable
 
 # Transfer learning model used for image classification with CovNet as fixed feature extractor 
 
@@ -35,13 +34,13 @@ data_transforms = {
 }
 
 # Sets folderpath to folders containing the images 
-data_dir = '/home/melissa/Documents/Hair_Basic/Basic_Hair_Dataset/'
+data_dir = '$HOME/Documents/Hair_Basic/Basic_Hair_Dataset/'
 
 # Loads dataset from folderpath and applies transforms
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
 
-# Provides data to model (4 images per batch, random, 4 parallel data imput)
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=22, shuffle=True, num_workers=4) for x in ['train', 'val']}
+# Provides data to model (32 images per batch, random, 4 parallel data imput)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=32, shuffle=True, num_workers=4) for x in ['train', 'val']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
