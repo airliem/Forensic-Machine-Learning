@@ -4,8 +4,8 @@ import os
 # Takes a list of jpg files from folderpath and renames
 # them from original name to prefix_1.jpg .. prefix_n.jpg
 # where n is the number of images in the folderpath
-folderpath = r'/home/melissa/Documents/Hazel_Lara_Pilot/Extra_Data/Hazel_data/'
-prefix = 'H'
+folderpath = r'$HOME/Documents/Hair_Basic/AC/'
+prefix = 'AC'
 filenumber = 1
 
 for filename in os.listdir(folderpath):
