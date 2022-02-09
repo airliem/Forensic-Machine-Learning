@@ -6,8 +6,8 @@ import os
 # Set folderpath to the folder to contain the transformed images
 # Takes a list of jpg files from folderpath and transforms each image
 # three times and sends three transformed images to new folderpath
-input_folder = r'/home/melissa/Documents/Hazel_Lara_Pilot/Raw_Data/Lara_train1/'
-output_folder = r'/home/melissa/Documents/Hazel_Lara_Pilot/Raw_Data/Lara_train2/'
+input_folder = r'$HOME/Documents/Hair_Basic/AC/'
+output_folder = r'$HOME/Documents/Hair_Basic/AC_train/'
 
 def transform (file):
     inputfile = input_folder + file 
