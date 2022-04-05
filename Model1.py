@@ -34,7 +34,7 @@ data_transforms = {
 }
 
 # Sets folderpath to folders containing the images 
-data_dir = '$home/directory'
+data_dir = '$file_path'
 
 # Loads dataset from folderpath and applies transforms
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'test']}
