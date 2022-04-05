@@ -26,7 +26,7 @@ data_transforms = {
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
-    'val': transforms.Compose([
+    'test': transforms.Compose([
         transforms.Resize((256, 256)),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -34,15 +34,16 @@ data_transforms = {
 }
 
 # Sets folderpath to folders containing the images 
-data_dir = '$HOME/Documents/Hair_Basic/Basic_Hair_Dataset/'
+data_dir = '$home/directory'
 
 # Loads dataset from folderpath and applies transforms
-image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
+image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'test']}
 
 # Provides data to model (32 images per batch, random, 4 parallel data imput)
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=32, shuffle=True, num_workers=4) for x in ['train', 'val']}
-dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=32, shuffle=True, num_workers=4) for x in ['train', 'test']}
+dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'test']}
 class_names = image_datasets['train'].classes
+val_class_names = image_datasets['test'].classes
 
 # Uses GPU-cuda else CPU
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -81,7 +82,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=15):
         print('-' * 10)
 
         # For each epoch is a training and testing (val) phase
-        for phase in ['train', 'val']:
+        for phase in ['train', 'test']:
             if phase == 'train':
                 model.train()  
             else:
@@ -125,7 +126,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=15):
                 phase, epoch_loss, epoch_acc))
 
             # Deep copies best model
-            if phase == 'val' and epoch_acc > best_acc:
+            if phase == 'test' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
@@ -134,21 +135,21 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=15):
     # Prints training time and best model
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-    print('Best val Acc: {:4f}'.format(best_acc))
+    print('Best test Acc: {:4f}'.format(best_acc))
 
     # Loads best model weights
     model.load_state_dict(best_model_wts)
     return model
 
 # General function to display model predictions for some images
-def visualize_model(model, num_images=10):
+def visualize_model(model, num_images=9):
     was_training = model.training
     model.eval()
     images_so_far = 0
     fig = plt.figure()
 
     with torch.no_grad():
-        for i, (inputs, labels) in enumerate(dataloaders['val']):
+        for i, (inputs, labels) in enumerate(dataloaders['test']):
             inputs = inputs.to(device)
             labels = labels.to(device)
 
@@ -157,9 +158,9 @@ def visualize_model(model, num_images=10):
 
             for j in range(inputs.size()[0]):
                 images_so_far += 1
-                ax = plt.subplot(num_images//2, 2, images_so_far)
+                ax = plt.subplot(num_images//2, 3, images_so_far)
                 ax.axis('off')
-                ax.set_title('predicted: {}'.format(class_names[preds[j]]))
+                ax.set_title('predicted: {}'.format(val_class_names[preds[j]]))
                 imshow(inputs.cpu().data[j])
 
                 if images_so_far == num_images:
@@ -210,7 +211,7 @@ nb_classes = 3
 
 confusion_matrix = torch.zeros(nb_classes, nb_classes)
 with torch.no_grad():
-    for i, (inputs, classes) in enumerate(dataloaders['val']):
+    for i, (inputs, classes) in enumerate(dataloaders['test']):
         inputs = inputs.to(device)
         classes = classes.to(device)
         outputs = model_conv(inputs)
