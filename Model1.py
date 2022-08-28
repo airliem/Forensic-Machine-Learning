@@ -40,7 +40,7 @@ data_dir = '$file_path'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'test']}
 
 # Provides data to model (32 images per batch, random, 4 parallel data imput)
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=32, shuffle=True, num_workers=4) for x in ['train', 'test']}
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4, shuffle=True, num_workers=4) for x in ['train', 'test']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'test']}
 class_names = image_datasets['train'].classes
 val_class_names = image_datasets['test'].classes
