@@ -202,7 +202,7 @@ plt.ioff()
 plt.show() 
 
 # Defines path
-PATH = 'state_dict_model.pt'
+PATH = 'hair_root_model.pt'
 
 # Saves model
 torch.save(model_conv.state_dict(), PATH)

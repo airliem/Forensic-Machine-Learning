@@ -1,0 +1,16 @@
+<!doctype html>
+<title>Hair Categorisation</title>
+<div>
+<h1> {{ category }} - Please provide a hair root image for analysis</h1>
+</div>
+<div>
+<form action="predict_root" method="POST"  enctype="multipart/form-data">
+<input type="file"
+       id="file" name="file"
+       accept="image/png, image/jpeg">
+</div>
+<div>
+<input type="submit" value="Submit file" />
+<div>
+<img src="data:;base64,{{ image }}"/>
+</div>
